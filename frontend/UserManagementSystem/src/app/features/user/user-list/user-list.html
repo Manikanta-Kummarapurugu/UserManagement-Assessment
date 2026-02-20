@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-end align-items-center mb-4 p-3 bg-light shadow-sm">
+   
+        <button pButton label="Logout" class="btn btn-secondary" (click)="logout()"></button>
+</div>
+<div class="d-flex justify-content-center align-items-top vh-100 bg-light" style="margin-bottom: 100px;">
+    <div class="card p-4" style=" width: 100%; max-width: 1200px;margin-top: 100px;">
+        <h3>User List</h3>
+        <div style="display: flex; justify-content: flex-end; align-items: center;">
+
+            <button pButton label="Add User" class="btn btn-success me-2" (click)="openDialog(null,'add')"
+                style="width: 100px;margin-bottom: 10px;"></button>
+        </div>
+        <p-table [value]="users" stripedRows showGridlines [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'"
+            style="width: 100%;" styleClass="table-grey">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <button pButton icon="pi pi-pencil" class="btn btn-outline-primary btn-sm me-2"
+                            (click)="openDialog(user, 'edit')"></button>
+
+                        <button pButton icon="pi pi-eye" class="btn btn-outline-info btn-sm me-2"
+                            (click)="openDialog(user, 'view')"></button>
+
+                        <button pButton icon="pi pi-trash" class="btn btn-outline-danger btn-sm"
+                            (click)="deleteUser(user)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <!-- </div> -->
+    </div>
+    <p-dialog header="{{ dialogHeader }}" [(visible)]="displayDialog" [modal]="true" [closable]="false"
+        [style]="{ width: '400px' }">
+        <form>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input id="name" type="text" pInputText [(ngModel)]="selectedUser.name" name="name" class="form-control"
+                    [readOnly]="isViewMode" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" type="text" pInputText [(ngModel)]="selectedUser.email" name="email"
+                    class="form-control" [readOnly]="isViewMode" />
+            </div>
+
+            <div class="mb-3" *ngIf="isNewUser">
+                <label for="password" class="form-label">Password</label>
+                <input id="password" type="password" pInputText [(ngModel)]="selectedUser.password" name="password"
+                    class="form-control" />
+            </div>
+        </form>
+        <button pButton label="Cancel" class="btn btn-secondary me-2" (click)="displayDialog=false"></button>
+        <button *ngIf="!isViewMode" pButton label="{{ isNewUser ? 'Create' : 'Update' }}" class="btn btn-primary"
+            (click)="saveUser()"></button>
+    </p-dialog>
+    <p-toast></p-toast>
